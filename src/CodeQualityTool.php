@@ -139,6 +139,8 @@ class CodeQualityTool extends Application
             }
 
             $rules = json_encode([
+                '@PSR1' => true,
+                '@PSR2' => true,
                 '@Symfony' => true,
                 'array_syntax' => ['syntax' => 'short'],
                 'no_unused_imports' => true,
