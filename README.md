@@ -19,7 +19,7 @@ symbolic link to the hook/pre-commit file of this project.
     }
 ````
 
-Create the git_hooks.yaml to configure what will be used.
+Create the git_hooks.yml to configure what will be used.
 ````yaml
 git_hooks:
     phpLint: true
