@@ -8,16 +8,13 @@ Warning: This will replace any existing .git/hooks/pre-commit file and put a
 symbolic link to the hook/pre-commit file of this project.
 ````yaml
     "scripts": {
-        "post-install-cmd": [
-            "mkdir -p .git/hooks",
-            "ln -s ../../vendor/enrj/git-hooks/hooks/pre-commit .git/hooks/pre-commit --force"
-        ],
-        "post-update-cmd": [
+        "create-git-hooks": [
             "mkdir -p .git/hooks",
             "ln -s ../../vendor/enrj/git-hooks/hooks/pre-commit .git/hooks/pre-commit --force"
         ]
-    }
+    },
 ````
+then use the command "composer create-git-hooks"
 
 Create the git_hooks.yml to configure what will be used.
 ````yaml
