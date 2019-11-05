@@ -31,6 +31,7 @@ class CodeQualityTool extends Application
         $this->config = Yaml::parse(
             file_get_contents(self::PROJECT_DIR.'/git_hooks.yml')
         );
+        $this->ignoreFolder = $this->config['git_hooks']['ignore_folder'] ?? '';
     }
 
     public function doRun(InputInterface $input, OutputInterface $output)
@@ -41,6 +42,13 @@ class CodeQualityTool extends Application
         $output->writeln('<fg=white;options=bold;bg=red>Code Quality Tool</fg=white;options=bold;bg=red>');
         $output->writeln('<info>Fetching files</info>');
         $files = $this->extractCommitedFiles();
+
+        if (!empty($this->ignoreFolder)) {
+            $this->ignoreFolder = '/^('.preg_quote(implode('|', $this->ignoreFolder), '/').')/';
+            $files = array_filter($files, function ($a) {
+                return !preg_match($this->ignoreFolder, $a);
+            });
+        }
 
         $toolsConfig = [
             [

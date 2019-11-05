@@ -25,3 +25,9 @@ git_hooks:
     phpMd: true
     twigCs: true
 ````
+
+optional parameter to put in git_hooks.yml
+````yaml
+    ignore_folder:
+        - src/Migrations
+````
