@@ -180,7 +180,7 @@ class CodeQualityTool extends Application
                 continue;
             }
 
-            $process = new Process(array('php', 'vendor/bin/phpcs', '--standard=PSR2', $file));
+            $process = new Process(array('php', 'vendor/bin/phpcs', $file));
             $process->setWorkingDirectory(self::PROJECT_DIR);
             $process->run();
 
