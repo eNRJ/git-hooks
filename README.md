@@ -9,8 +9,7 @@ symbolic link to the hook/pre-commit file of this project.
 ````yaml
     "scripts": {
         "create-git-hooks": [
-            "mkdir -p .git/hooks",
-            "ln -s ../../vendor/enrj/git-hooks/hooks/pre-commit .git/hooks/pre-commit --force"
+            "[ $COMPOSER_DEV_MODE -eq 0 ] || (mkdir -p .git/hooks && ln -f -s ../../vendor/enrj/git-hooks/hooks/pre-commit .git/hooks/pre-commit)"
         ]
     },
 ````
