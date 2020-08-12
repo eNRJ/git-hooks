@@ -1,9 +1,15 @@
-#!/usr/bin/php
-<?php
+#!/bin/bash
+kathie () { script -eqfc "$(printf "%q " "$@")" /dev/null; }
 
-require __DIR__ . '/../../../../vendor/autoload.php';
+echo "Exec Behat test for: nrj, cherie, nostalgie, rire? none to skip"
+# Read user input, assign stdin to keyboard
+exec < /dev/tty
+read site
+if [ "$site" = "nrj" ] || [ "$site" = "cherie" ] || [ "$site" = "nostalgie" ] || [ "$site" = "rire" ] ; then
+  kathie docker-compose exec --user dev -e APP_NAME="$site" php php -d memory_limit=2G vendor/bin/behat --tags="common,$site" --tags="~javascript" --stop-on-failure -v
+fi
 
-use GitHooks\src\CodeQualityTool;
-
-$console = new CodeQualityTool();
-$console->run();
+php vendor/enrj/git-hooks/hooks/codeQualityTool.php
+# close
+exec <&-
+exit 0

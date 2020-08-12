@@ -14,7 +14,7 @@ class CodeQualityTool extends Application
     private $output;
     private $input;
     private $config;
-    private $toolConfig;
+    private $ignoreFolder;
 
     const PHP_FILES_IN_SRC = '/(.*)(\.php)$/';
     const TWIG_FILES = '/(\.twig)$/';
