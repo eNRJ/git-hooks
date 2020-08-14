@@ -1,6 +1,6 @@
 #!/bin/bash
 
-FILE=behat.sh
+FILE=bruli.sh
 if [ -f "$FILE" ]; then
   "./$FILE"
 fi
