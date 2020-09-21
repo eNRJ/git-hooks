@@ -1,6 +1,6 @@
 #!/bin/bash
 
-FILE=bruli.sh
+FILE=git_hooks.sh
 if [ -f "$FILE" ]; then
   "./$FILE"
 fi
