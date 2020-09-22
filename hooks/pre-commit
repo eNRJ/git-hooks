@@ -6,4 +6,4 @@ if [ -f "$FILE" ]; then
 fi
 
 php vendor/enrj/git-hooks/hooks/codeQualityTool.php
-exit 0
+exit `echo $?`
