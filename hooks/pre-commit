@@ -1,9 +1,17 @@
 #!/bin/bash
 
 FILE=git_hooks.sh
+res=0
 if [ -f "$FILE" ]; then
   "./$FILE"
+   if [ $? -ne 0 ]; then
+    res=1
+  fi
 fi
 
 php vendor/enrj/git-hooks/hooks/codeQualityTool.php
-exit `echo $?`
+if [ $? -gt $res ]; then
+  res=1
+fi
+
+exit $res
