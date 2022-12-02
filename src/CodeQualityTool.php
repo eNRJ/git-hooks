@@ -146,16 +146,7 @@ class CodeQualityTool extends Application
                 continue;
             }
 
-            $rules = json_encode([
-                '@PSR1' => true,
-                '@PSR2' => true,
-                '@Symfony' => true,
-                'array_syntax' => ['syntax' => 'short'],
-                'no_unused_imports' => true,
-                'single_quote' => true,
-                'ternary_operator_spaces' => true,
-            ]);
-            $process = new Process(['php', 'vendor/bin/php-cs-fixer', '--dry-run', '-vvv', 'fix', '--rules='.$rules, $file]);
+            $process = new Process(['php', 'vendor/bin/php-cs-fixer', '--dry-run', '-vvv', 'fix', $file]);
             $process->setWorkingDirectory(self::PROJECT_DIR);
             $process->run();
 
