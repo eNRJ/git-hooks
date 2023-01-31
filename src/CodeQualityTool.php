@@ -56,42 +56,49 @@ class CodeQualityTool extends Application
                 'msg' => 'Running PHPLint',
                 'function' => 'phpLint',
                 'errorMsg' => 'There are some PHP syntax errors!',
-                'params' => [],
+                'required' => true,
             ],
             [
                 'isEnabled' => !empty($this->config['git_hooks']['phpCsFixer']),
                 'msg' => 'Checking code style with php-cs-fixer',
                 'function' => 'codeStyle',
                 'errorMsg' => 'There are coding standards violations!',
-                'params' => [],
+                'required' => true,
             ],
             [
                 'isEnabled' => !empty($this->config['git_hooks']['phpCs']),
                 'msg' => 'Checking code style with PHPCS',
                 'function' => 'codeStylePsr',
                 'errorMsg' => 'There are PHPCS coding standards violations!',
-                'params' => [],
+                'required' => true,
             ],
             [
                 'isEnabled' => !empty($this->config['git_hooks']['phpMd']),
                 'msg' => 'Checking code mess with PHPMD',
                 'function' => 'phPmd',
                 'errorMsg' => 'There are PHPMD violations!',
-                'params' => [],
+                'required' => true,
             ],
             [
                 'isEnabled' => !empty($this->config['git_hooks']['twigCs']),
                 'msg' => 'Checking twig code style with TWIGCS',
                 'function' => 'twigCs',
                 'errorMsg' => 'There are twig code style violations!',
-                'params' => [],
+                'required' => true,
+            ],
+            [
+                'isEnabled' => !empty($this->config['git_hooks']['rector']),
+                'msg' => 'Automated Refactoring proposal by Rector',
+                'function' => 'rector',
+                'errorMsg' => 'There are rector code style violations!',
+                'required' => false,
             ],
         ];
 
         foreach ($toolsConfig as $tools) {
             if ($tools['isEnabled']) {
                 $output->writeln(sprintf('<info>%s</info>', $tools['msg']));
-                if (!call_user_func_array([$this, $tools['function']], \array_merge([$files], $tools['params']))) {
+                if (!call_user_func_array([$this, $tools['function']], [$files]) && $tools['required']) {
                     throw new Exception($tools['errorMsg']);
                 }
             }
@@ -162,6 +169,32 @@ class CodeQualityTool extends Application
         return $succeed;
     }
 
+    private function rector(array $files)
+    {
+        $succeed = true;
+
+        foreach ($files as $file) {
+            $srcFile = preg_match(self::PHP_FILES_IN_SRC, $file);
+
+            if (!$srcFile) {
+                continue;
+            }
+
+            $process = new Process(['php', 'vendor/bin/rector', 'process', '--dry-run', $file]);
+            $process->setTty(true);
+            $process->run();
+
+            if (!$process->isSuccessful()) {
+                $this->output->writeln(sprintf('<comment>Their is rector refactoring proposal, please consider running: vendor/bin/rector process %s</comment>', $file));
+
+                if ($succeed) {
+                    $succeed = false;
+                }
+            }
+        }
+
+        return $succeed;
+    }
     private function codeStylePsr(array $files)
     {
         $succeed = true;
