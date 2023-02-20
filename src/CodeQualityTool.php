@@ -173,25 +173,22 @@ class CodeQualityTool extends Application
     {
         $succeed = true;
 
-        foreach ($files as $file) {
-            $srcFile = preg_match(self::PHP_FILES_IN_SRC, $file);
+        $srcFiles = implode(' ', array_filter($files, function ($file) {
+            return preg_match(self::PHP_FILES_IN_SRC, $file);
+        }));
 
-            if (!$srcFile) {
-                continue;
-            }
+        $process = new Process(['php', 'vendor/bin/rector', 'process', '--dry-run', $srcFiles]);
+        $process->setTty(true);
+        $process->run();
 
-            $process = new Process(['php', 'vendor/bin/rector', 'process', '--dry-run', $file]);
-            $process->setTty(true);
-            $process->run();
+        if (!$process->isSuccessful()) {
+            $this->output->writeln(sprintf('<comment>Their is rector refactoring proposal, please consider running: vendor/bin/rector process %s</comment>', $srcFiles));
 
-            if (!$process->isSuccessful()) {
-                $this->output->writeln(sprintf('<comment>Their is rector refactoring proposal, please consider running: vendor/bin/rector process %s</comment>', $file));
-
-                if ($succeed) {
-                    $succeed = false;
-                }
+            if ($succeed) {
+                $succeed = false;
             }
         }
+
 
         return $succeed;
     }
