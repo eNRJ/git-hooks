@@ -173,15 +173,15 @@ class CodeQualityTool extends Application
     {
         $succeed = true;
 
-        $srcFiles = implode(' ', array_filter($files, function ($file) {
+        $srcFiles = array_filter($files, function ($file) {
             return preg_match(self::PHP_FILES_IN_SRC, $file);
-        }));
+        });
         
         if (empty($srcFiles)) {
             return true;
         }
         
-        $process = new Process(['php', 'vendor/bin/rector', 'process', '--dry-run', $srcFiles]);
+        $process = new Process([...['php', 'vendor/bin/rector', 'process', '--dry-run'], ...$srcFiles]);
         $process->setTty(true);
         $process->run();
 
