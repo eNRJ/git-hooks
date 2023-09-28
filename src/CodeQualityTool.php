@@ -112,7 +112,7 @@ class CodeQualityTool extends Application
         $output = array();
 
         exec('git rev-parse --verify HEAD 2> /dev/null', $output, $rc);
-        exec("git diff-index --cached --name-status HEAD | egrep '^(A|M)' | awk '{print $2;}'", $output);
+        exec("git diff-index --cached --name-status HEAD | grep -E '^(A|M)' | awk '{print $2;}'", $output);
 
         return $output;
     }
