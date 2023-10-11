@@ -176,17 +176,17 @@ class CodeQualityTool extends Application
         $srcFiles = array_filter($files, function ($file) {
             return preg_match(self::PHP_FILES_IN_SRC, $file);
         });
-        
+
         if (empty($srcFiles)) {
             return true;
         }
-        
+
         $process = new Process([...['php', 'vendor/bin/rector', 'process', '--dry-run'], ...$srcFiles]);
         $process->setTty(true);
         $process->run();
 
         if (!$process->isSuccessful()) {
-            $this->output->writeln(sprintf('<comment>Their is rector refactoring proposal, please consider running: vendor/bin/rector process %s</comment>', $srcFiles));
+            $this->output->writeln(sprintf('<comment>There are rector refactoring proposals, please consider running: vendor/bin/rector process %s</comment>', implode(' ', $srcFiles)));
 
             if ($succeed) {
                 $succeed = false;
