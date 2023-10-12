@@ -87,6 +87,13 @@ class CodeQualityTool extends Application
                 'required' => true,
             ],
             [
+                'isEnabled' => !empty($this->config['git_hooks']['phpStan']),
+                'msg' => 'Checking code with phpStan',
+                'function' => 'phpStan',
+                'errorMsg' => 'There are errors shown by phpstan!',
+                'required' => true,
+            ],
+            [
                 'isEnabled' => !empty($this->config['git_hooks']['rector']),
                 'msg' => 'Automated Refactoring proposal by Rector',
                 'function' => 'rector',
@@ -193,7 +200,6 @@ class CodeQualityTool extends Application
             }
         }
 
-
         return $succeed;
     }
     private function codeStylePsr(array $files)
@@ -264,6 +270,31 @@ class CodeQualityTool extends Application
                 if ($succeed) {
                     $succeed = false;
                 }
+            }
+        }
+
+        return $succeed;
+    }
+
+    private function phpStan($files): bool
+    {
+        $succeed = true;
+
+        $srcFiles = array_filter($files, function ($file) {
+            return preg_match(self::PHP_FILES_IN_SRC, $file);
+        });
+
+        if (empty($srcFiles)) {
+            return true;
+        }
+
+        $process = new Process([...['php', 'vendor/bin/phpstan', 'analyse'], ...$srcFiles]);
+        $process->setTty(true);
+        $process->run();
+
+        if (!$process->isSuccessful()) {
+            if ($succeed) {
+                $succeed = false;
             }
         }
 
